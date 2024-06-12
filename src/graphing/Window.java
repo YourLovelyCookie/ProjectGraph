@@ -2,9 +2,6 @@ package graphing;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class Window extends JFrame {
 
@@ -18,10 +15,12 @@ public class Window extends JFrame {
     JPanel btnsJP = new JPanel(new GridLayout());
     JButton addJB = new JButton("ADD");
     JButton removeJB = new JButton("REMOVE");
-    JButton renameJB = new JButton("RENAME");
+    JButton editJB = new JButton("RENAME");
 
     JTextArea notesTA = new JTextArea("This is a beautiful note :D");
 
+
+    PopUp popUp = new PopUp("add", this);
 
 
     public Window(int width, int height) {
@@ -40,29 +39,33 @@ public class Window extends JFrame {
         inputsLi.addElement("a = 2");
 
 
-        addJB.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JDialog t_jd = new JDialog();
+        addJB.addActionListener(e -> {
+            /*JDialog t_jd = new JDialog();
 
-                t_jd.add(new JComboBox<>(inputsLi.toArray()));
-                t_jd.add(new JButton("yep"));
-                t_jd.add(new JButton("noo"));
-                t_jd.setSize(100, 100);
-                t_jd.setModal(true);
-                t_jd.setVisible(true);
-            }
+            t_jd.add(new JComboBox<>(inputsLi.toArray()));
+            t_jd.add(new JButton("yep"));
+            t_jd.add(new JButton("noo"));
+            t_jd.setSize(100, 100);
+            t_jd.setModal(true);
+            t_jd.setVisible(true);*/
+            popUp.setLocationRelativeTo(null);
+            popUp.display("add");
+            popUp.setVisible(true);
         });
-        removeJB.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (inputsJL.getSelectedIndex() > -1) inputsLi.remove(inputsJL.getSelectedIndex());
+        removeJB.addActionListener(e -> {
+            if (inputsJL.getSelectedIndex() > -1) inputsLi.remove(inputsJL.getSelectedIndex());
+        });
+        editJB.addActionListener(e -> {
+            if (inputsJL.getSelectedIndex() > -1) {
+                popUp.setLocationRelativeTo(null);
+                popUp.display("edit");
+                popUp.setVisible(true);
             }
         });
 
         btnsJP.add(addJB);
         btnsJP.add(removeJB);
-        btnsJP.add(renameJB);
+        btnsJP.add(editJB);
 
         // -- JPanel
         bdlJP.add(cnv, BorderLayout.CENTER);                // Center
@@ -72,7 +75,7 @@ public class Window extends JFrame {
 
 
         // -- WINDOW - END
-        getContentPane().add(bdlJP);
+        add(bdlJP);
         /* pack();
         setSize(width, height); */
 
@@ -82,7 +85,6 @@ public class Window extends JFrame {
 
     public void draw(Graphics g)
     {
-        toFront();
         System.out.println("yep");
         //repaint();
     }
