@@ -9,7 +9,7 @@ public class Window extends JFrame {
 
     Canvas cnv = new Canvas() { public void paint(Graphics g) {draw(g); } };
 
-    DefaultListModel<String> inputsLi = new DefaultListModel<>();
+    DefaultListModel<String> inputsLi = new DefaultListModel<>(); // LOAD //// SAFE
     JList<String> inputsJL = new JList<>(inputsLi);
 
     JPanel btnsJP = new JPanel(new GridLayout());
@@ -17,7 +17,7 @@ public class Window extends JFrame {
     JButton removeJB = new JButton("REMOVE");
     JButton editJB = new JButton("RENAME");
 
-    JTextArea notesTA = new JTextArea("This is a beautiful note :D");
+    JTextArea notesTA = new JTextArea("This is a beautiful note :D"); // LOAD //// SAFE
 
 
     PopUp popUp = new PopUp("add", this);
@@ -40,14 +40,6 @@ public class Window extends JFrame {
 
 
         addJB.addActionListener(e -> {
-            /*JDialog t_jd = new JDialog();
-
-            t_jd.add(new JComboBox<>(inputsLi.toArray()));
-            t_jd.add(new JButton("yep"));
-            t_jd.add(new JButton("noo"));
-            t_jd.setSize(100, 100);
-            t_jd.setModal(true);
-            t_jd.setVisible(true);*/
             popUp.setLocationRelativeTo(null);
             popUp.display("add");
             popUp.setVisible(true);

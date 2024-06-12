@@ -10,3 +10,14 @@
   - Being able to create a group
     - Changing the group type (e.g. normal / line --> connect the lines using only lines)
 
+
+  
+<br>
+<br>
+<br>
+<br>
+
+# ToDo
+- Load / Save feature (see " // LOAD //// SAFE" comments)
+- Points as Input
+- Graphs/Points on Canvas
