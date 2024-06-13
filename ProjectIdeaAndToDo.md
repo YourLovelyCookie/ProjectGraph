@@ -18,7 +18,9 @@
 <br>
 
 # ToDo
-- Load / Save feature (see " // LOAD //// SAFE" comments)
 - Graphs/Points on Canvas
-
+- Make File loadable by opening it with this jar (see arguments of this java file (.jar) in the Main class)
+<br><br>
 - Quality of Life (QoL)
+<br><br><br>
+- ((Being able to turn off AutoBackup (ask on start)) -> maybe / not sure if it's worth)

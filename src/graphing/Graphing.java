@@ -1,14 +1,22 @@
 package graphing;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Graphing {
 
+    public static String funcPrefix = "f (x) = ";
+    public static String pointPrefix = "P (";
+    public static String pointSuffix = ")";
+
     public static String inputNaming(String val, int type) { // Check if "val" only contains characters that are allowed (e.g. 0-9, "x", "+", "-", "/", "*", "^", ".") and remove what is not allowed (e.g. iterate through every character and check if it is alright)
         StringBuilder newVal = new StringBuilder();
         String t_val = val;
+        //t_val.replace(funcPrefix, "").replace(pointPrefix, "").replace(pointSuffix, "");
+        t_val = t_val.replace("(x)", "");
         if (type == PopUp.typeCE.FUNCTION.ordinal()) {
             String[] allowedCharsA = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "x", "X", "+", "-", "/", "*", "^" };
             String[] spacingCharsA = { "+", "-", "/", "*"};
@@ -28,7 +36,7 @@ public class Graphing {
             if (newVal.isEmpty()) return "ERROR";
 
 
-            return "f (x) = " + newVal;
+            return funcPrefix + newVal;
     }
     else if (type == PopUp.typeCE.POINT.ordinal()) { // remove all double spaces and then add them to certain characters (e.g. " + ")
         String[] allowedCharsA = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", ".", ";", "," };
@@ -50,11 +58,31 @@ public class Graphing {
         if(newValFinal.split(";").length >= 2 && !newValFinal.split(";")[0].isEmpty() && !newValFinal.split(";")[1].isEmpty()) {
             newValFinal = newValFinal.split(";")[0] + "; " + newValFinal.split(";")[1];
 
-            return "a (" + newValFinal + ")";
+            return pointPrefix + newValFinal + pointSuffix;
         }
     }
 
         return "ERROR";
     }
+
+    public static int detectType (String val) {
+        if (val.startsWith(funcPrefix)) return PopUp.typeCE.FUNCTION.ordinal();
+        if (val.startsWith(pointPrefix) && val.endsWith(pointSuffix)) return PopUp.typeCE.POINT.ordinal();
+
+        return -1;
+    }
+
+    public static String removePreASuf (String val, int type) {
+        int t_type = -1;
+        if (type == -1) {
+            t_type = detectType(val);
+        }
+
+        if (t_type == PopUp.typeCE.FUNCTION.ordinal()) return val.substring(funcPrefix.length());
+        if (t_type == PopUp.typeCE.POINT.ordinal()) return val.substring(pointPrefix.length()).substring(0, val.substring(pointPrefix.length()).length() - pointSuffix.length());
+
+        return val;
+    }
+    public static String removePreASuf (String val) { return removePreASuf(val, -1); }
 
 }

@@ -13,6 +13,7 @@ public class PopUp extends JFrame {
 
 
     JTextField newValJTF = new JTextField();
+    JComboBox editTypeJCB = new JComboBox(typeC);
 
     Window wind;
 
@@ -54,8 +55,6 @@ public class PopUp extends JFrame {
         // -- Edit
         JPanel editJP = new JPanel(new BorderLayout());
 
-        JComboBox editTypeJCB = new JComboBox(typeC);
-
         JPanel btnsEditJP = new JPanel();
         JButton editJB = new JButton("EDIT");
         editJB.addActionListener(e -> {
@@ -91,7 +90,8 @@ public class PopUp extends JFrame {
         typeCL.show(getContentPane(), disType);
         if (disType.equalsIgnoreCase("edit"))
         {
-            newValJTF.setText(wind.inputsLi.get(wind.inputsJL.getSelectedIndex()).replace("f (x) = ", "").replace("a (", "").replace(")", ""));
+            newValJTF.setText(Graphing.removePreASuf(wind.inputsLi.get(wind.inputsJL.getSelectedIndex())));
+            editTypeJCB.setSelectedIndex(Graphing.detectType((wind.inputsLi.get(wind.inputsJL.getSelectedIndex()))));
         }
     }
 
