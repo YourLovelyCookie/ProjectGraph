@@ -11,7 +11,13 @@ public class PopUp extends JFrame {
     public enum typeCE{ FUNCTION, POINT };
     public static String[] typeC = { "Function", "Point" };
 
+
+    JTextField newValJTF = new JTextField();
+
+    Window wind;
+
     public PopUp(String disType, Window wind) {
+        this.wind = wind;
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setSize(400, 200);
 
@@ -47,7 +53,6 @@ public class PopUp extends JFrame {
 
         // -- Edit
         JPanel editJP = new JPanel(new BorderLayout());
-        JTextField newValJTF = new JTextField();
 
         JComboBox editTypeJCB = new JComboBox(typeC);
 
@@ -84,6 +89,10 @@ public class PopUp extends JFrame {
 
     public void display(String disType) {
         typeCL.show(getContentPane(), disType);
+        if (disType.equalsIgnoreCase("edit"))
+        {
+            newValJTF.setText(wind.inputsLi.get(wind.inputsJL.getSelectedIndex()).replace("f (x) = ", "").replace("a (", "").replace(")", ""));
+        }
     }
 
 }

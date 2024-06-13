@@ -19,5 +19,6 @@
 
 # ToDo
 - Load / Save feature (see " // LOAD //// SAFE" comments)
-- Points as Input
 - Graphs/Points on Canvas
+
+- Quality of Life (QoL)

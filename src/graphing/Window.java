@@ -1,6 +1,9 @@
 package graphing;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 
 public class Window extends JFrame {
@@ -30,13 +33,13 @@ public class Window extends JFrame {
         setSize(width, height);
 
 
-        // -- Canvas / Inputs / buttons
+        // -- Canvas / Inputs / Buttons
         //cnv.setBackground(new Color(235, 235, 235));
         cnv.setBackground(Color.RED); // Replace with the line above !!!!!!!!!!!!!!!!!!!!!!!!
 
 
-        inputsLi.addElement("f(x) = a*x");
-        inputsLi.addElement("a = 2");
+        inputsLi.addElement(Graphing.inputNaming("4*x", PopUp.typeCE.FUNCTION.ordinal()));
+        inputsLi.addElement(Graphing.inputNaming("2; 4", PopUp.typeCE.POINT.ordinal()));
 
 
         addJB.addActionListener(e -> {
@@ -77,7 +80,7 @@ public class Window extends JFrame {
 
     public void draw(Graphics g)
     {
-        System.out.println("yep");
+        if(notesTA.getText().isEmpty()) notesTA.setText("---------------");
         //repaint();
     }
 
