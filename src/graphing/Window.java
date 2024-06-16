@@ -3,21 +3,32 @@ package graphing;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Window extends JFrame {
 
     JPanel bdlJP = new JPanel(new BorderLayout()); // BorderLayout JPanel
 
-    Canvas cnv = new Canvas() { public void paint(Graphics g) {draw(g); } };
+    JPanel cnv = new JPanel() { public void paintComponent(Graphics g) {paintComponentCnv(g); } };
+
+    // Editable settings for canvas
+    double zoom = 1;
+    double zoomStrength = 0.2;
+    float lineWidth = 5;
+    float levelOfDetail = 0.05f;
+    float minX = -1000;
+    float maxX = 1000;
+
 
     DefaultListModel<String> inputsLi = new DefaultListModel<>(); // LOAD //// SAFE
     JList<String> inputsJL = new JList<>(inputsLi);
@@ -42,14 +53,13 @@ public class Window extends JFrame {
         //setMinimumSize();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(width, height);
-
+        /*System.out.println(Graphing.calculate(Graphing.inputNaming("-4*(5+(-3-2)/8)+4", 0), 5));
+        System.out.println();
+        System.out.println(Graphing.calculate(Graphing.inputNaming("-3*-2/5^(3*x)/4+5", 0), 5));*/
 
         // -- Canvas / Inputs / Buttons / Load And Save
-        //cnv.setBackground(new Color(235, 235, 235));
-        cnv.setBackground(Color.RED); // Replace with the line above !!!!!!!!!!!!!!!!!!!!!!!!
 
-
-        inputsLi.addElement(Graphing.inputNaming("4*x", PopUp.typeCE.FUNCTION.ordinal()));
+        inputsLi.addElement(Graphing.inputNaming("0.005*x^2", PopUp.typeCE.FUNCTION.ordinal())); // 4x
         inputsLi.addElement(Graphing.inputNaming("2; 4", PopUp.typeCE.POINT.ordinal()));
 
 
@@ -74,7 +84,7 @@ public class Window extends JFrame {
         btnsJP.add(editJB);
 
 
-        loadJB.addActionListener(e -> { loadFile(); });
+        loadJB.addActionListener(e -> loadFile());
         saveJB.addActionListener(e -> { saveFile(null, true); });
 
         loadASafeJP.add(loadJB, BorderLayout.LINE_START);
@@ -93,13 +103,88 @@ public class Window extends JFrame {
         /* pack();
         setSize(width, height); */
 
+        setMinimumSize(new Dimension(800, 400));
+        setResizable(false);
+        addMouseWheelListener(e -> {
+            if (e.isControlDown()) {
+                if (e.getWheelRotation() < 0) {
+                    setSize(getWidth()-200, getWidth()/2);
+                    setSize(getWidth(), getWidth()/2);
+                } else {
+                    setSize(getWidth()+200, getWidth()/2);
+                    setSize(getWidth(), getWidth()/2);
+                }
+            } else {
+                if (e.getWheelRotation() < 0) {
+                    zoom += zoomStrength;
+                } else if(zoom-zoomStrength > 0) {
+                    zoom -= zoomStrength;
+                }
+                repaint();
+            }
+
+        });
     }
 
-
-
-    public void draw(Graphics g)
+    public void paintComponentCnv(Graphics g)
     {
         if(notesTA.getText().isEmpty()) notesTA.setText("---------------");
+
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(new Color(235, 235, 235));
+        g2d.fillRect(0, 0, cnv.getWidth(), cnv.getHeight());
+        /*g2d.translate(0, getHeight() - 1);
+        g2d.scale(1, -1);
+
+        g2d.drawLine(0, 0, 100, 100);*/
+        int width = getWidth();
+        int height = getHeight();
+
+        g2d.translate(width / 2, height / 2);
+
+        // Now you can draw shapes relative to the center
+        // For example, draw a line from the center to the top right corner
+        g2d.scale(1*zoom, -1*zoom);
+        g2d.setColor(Color.BLACK);
+
+        g2d.setStroke(new BasicStroke(3));
+        /*for(Object str : inputsLi.toArray()) {
+            for(float i = 0; i < maxX; i+=levelOfDetail)
+                Graphing.calculate(str.toString(), i);
+        }
+        for(Object str : inputsLi.toArray()) {
+            for(float i = 0; i > minX; i-=levelOfDetail)
+                Graphing.calculate(str.toString(), i);
+        }*/
+        /**/Random rand = new Random();
+        for (Object str : inputsLi.toArray()) {
+            rand.setSeed(str.hashCode());
+            g2d.setColor(new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()));
+            if (Graphing.detectType(str.toString()) == PopUp.typeCE.FUNCTION.ordinal()) {
+                ArrayList<Float> xFA = new ArrayList<Float>();
+                ArrayList<Float> yFA = new ArrayList<Float>();
+                for (float i = 0; i <= maxX; i+=levelOfDetail) {
+                    xFA.add(i);
+                    yFA.add(Graphing.calculate(str.toString(), i));
+                }
+                for (int i = 0; i < xFA.size()-1; i++) {
+                    g2d.drawLine(Math.round(xFA.get(i)), Math.round(yFA.get(i)), Math.round(xFA.get(i+1)), Math.round(yFA.get(i+1)));
+                }
+                xFA.clear();
+                yFA.clear();
+                for (float i = 0; i > minX; i-=levelOfDetail) {
+                    xFA.add(i);
+                    yFA.add(Graphing.calculate(str.toString(), i));
+                }
+                for (int i = 0; i < xFA.size()-1; i++) {
+                    g2d.drawLine(Math.round(xFA.get(i)), Math.round(yFA.get(i)), Math.round(xFA.get(i+1)), Math.round(yFA.get(i+1)));
+                }
+            }
+        }
+        //float j = Graphing.calculate(Graphing.inputNaming("-12+12", PopUp.typeCE.FUNCTION.ordinal()), 0);             ////        TEST
+        //float j = Graphing.calculate(Graphing.funcPrefix + "1x^2", 2);
+        //System.out.println(j);/**/
+
         //repaint();
     }
 
@@ -108,7 +193,7 @@ public class Window extends JFrame {
     JFileChooser fileJFC = new JFileChooser();
 
     public void loadFile() {
-        saveFile("Auto-BackUp-" + System.currentTimeMillis() + ".pgraph", false);
+        //saveFile("Auto-BackUp-" + System.currentTimeMillis() + ".pgraph", false);          //// AutoBackUp
         if (fileJFC.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             Scanner scan = null;
             try {

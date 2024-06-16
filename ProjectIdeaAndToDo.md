@@ -18,6 +18,8 @@
 <br>
 
 # ToDo
+- Add Grid on canvas with maybe numbers
+- Move Canvas with arrow keys and zoom with (unknown) key and open settings with (maybe c / unknown) key
 - Graphs/Points on Canvas
 - Make File loadable by opening it with this jar (see arguments of this java file (.jar) in the Main class)
 <br><br>
